@@ -5,24 +5,18 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.InputStream;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JSlider;
-
-import com.lsy.PlaySound;
-import com.lsy.MidiPlayer;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.Random;
-
-import javax.swing.JCheckBox;
-import javax.swing.JTextField;
-import java.awt.event.ItemListener;
-import java.awt.event.ItemEvent;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
@@ -57,8 +51,8 @@ public class GUI extends JFrame implements ActionListener, MouseListener {
 
 	static int randomnote;
 
-	ImageIcon icon_black = new ImageIcon("images/black.png");
-	ImageIcon icon_white = new ImageIcon("images/white.png");
+	ImageIcon icon_black = new ImageIcon(getClass().getResource("/images/black.png"));
+	ImageIcon icon_white = new ImageIcon(getClass().getResource("/images/white.png"));
 
 	MidiPlayer player;
 	private JLabel lblNewLabel;

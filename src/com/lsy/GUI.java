@@ -19,8 +19,13 @@ import javax.swing.JLabel;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.JList;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
 
-public class GUI extends JFrame implements ActionListener, MouseListener {
+public class GUI extends JFrame implements MouseListener {
 	private JButton btnC_0, btnD_0, btnE_0, btnF_0, btnG_0, btnA_0, btnB_0;
 	private JButton btnC_1, btnD_1, btnE_1, btnF_1, btnG_1, btnA_1, btnB_1;
 	private JButton btnC_2, btnD_2, btnE_2, btnF_2;
@@ -30,7 +35,7 @@ public class GUI extends JFrame implements ActionListener, MouseListener {
 
 	JCheckBox chckbxSlideToPlay;
 
-	int channel = 0;
+	int channel = 127;
 	static int volume = 50;// between 0 et 127
 
 	static int C = 60;
@@ -51,8 +56,10 @@ public class GUI extends JFrame implements ActionListener, MouseListener {
 
 	static int randomnote;
 
-	ImageIcon icon_black = new ImageIcon(getClass().getResource("/images/black.png"));
-	ImageIcon icon_white = new ImageIcon(getClass().getResource("/images/white.png"));
+	ImageIcon icon_black = new ImageIcon(getClass().getResource(
+			"/images/black.png"));
+	ImageIcon icon_white = new ImageIcon(getClass().getResource(
+			"/images/white.png"));
 
 	MidiPlayer player;
 	private JLabel lblNewLabel;
@@ -63,6 +70,7 @@ public class GUI extends JFrame implements ActionListener, MouseListener {
 	private JCheckBox chckbxShowresult;
 	private JSpinner spinner;
 	private JSpinner spinner_1;
+	JLabel label_volume;
 
 	public GUI() {
 		// try {
@@ -82,6 +90,8 @@ public class GUI extends JFrame implements ActionListener, MouseListener {
 		setTitle("ToneMaster");
 		setSize(800, 600);
 		getContentPane().setLayout(null);
+
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		btnFs_1 = new JButton("F#", icon_b);
 		btnFs_1.setBounds(466, 122, 30, 72);
@@ -162,7 +172,13 @@ public class GUI extends JFrame implements ActionListener, MouseListener {
 		lblVolume.setBounds(6, 294, 66, 29);
 		getContentPane().add(lblVolume);
 
-		JSlider slider = new JSlider();
+		final JSlider slider = new JSlider();
+		slider.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent arg0) {
+				volume = slider.getValue();
+				label_volume.setText(String.valueOf(volume));
+			}
+		});
 		slider.setBounds(62, 294, 190, 29);
 		// slider.createStandardLabels(10);
 		getContentPane().add(slider);
@@ -329,7 +345,7 @@ public class GUI extends JFrame implements ActionListener, MouseListener {
 				if (min < max) {
 					randomnote = player.playRandomNote(min, max);
 					label.setText(player.noteToString(randomnote));
-				} else{
+				} else {
 					spinner_1.setValue(108);
 				}
 			}
@@ -378,6 +394,72 @@ public class GUI extends JFrame implements ActionListener, MouseListener {
 		spinner_1.setModel(new SpinnerNumberModel(108, 22, 108, 1));
 		spinner_1.setBounds(660, 485, 50, 28);
 		getContentPane().add(spinner_1);
+
+		label_volume = new JLabel("50");
+		label_volume.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
+		label_volume.setBounds(248, 301, 61, 16);
+		getContentPane().add(label_volume);
+
+		final JComboBox comboBox = new JComboBox();
+		comboBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				channel = comboBox.getSelectedIndex();
+			}
+		});
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {
+				"1 Acoustic Grand Piano", "2 Bright Acoustic Piano",
+				"3 Electric Grand Piano", "4 Honky-tonk Piano",
+				"5 Electric Piano 1", "6 Electric Piano 2", "7 Harpsichord",
+				"8 Clavinet", "9 Celesta", "10 Glockenspiel", "11 Music Box",
+				"12 Vibraphone", "13 Marimba", "14 Xylophone",
+				"15 Tubular Bells", "16 Dulcimer", "17 Drawbar Organ",
+				"18 Percussive Organ", "19 Rock Organ", "20 Church Organ",
+				"21 Reed Organ", "22 Accordion", "23 Harmonica",
+				"24 Tango Accordion", "25 Acoustic Guitar (nylon)",
+				"26 Acoustic Guitar (steel)", "27 Electric Guitar (jazz)",
+				"28 Electric Guitar (clean)", "29 Electric Guitar (muted)",
+				"30 Overdriven Guitar", "31 Distortion Guitar",
+				"32 Guitar harmonics", "33 Acoustic Bass",
+				"34 Electric Bass (finger)", "35 Electric Bass (pick)",
+				"36 Fretless Bass", "37 Slap Bass 1", "38 Slap Bass 2",
+				"39 Synth Bass 1", "40 Synth Bass 2", "41 Violin", "42 Viola",
+				"43 Cello", "44 Contrabass", "45 Tremolo Strings",
+				"46 Pizzicato Strings", "47 Orchestral Harp", "48 Timpani",
+				"49 String Ensemble 1", "50 String Ensemble 2",
+				"51 Synth Strings 1", "52 Synth Strings 2", "53 Choir Aahs",
+				"54 Voice Oohs", "55 Synth Voice", "56 Orchestra Hit",
+				"57 Trumpet", "58 Trombone", "59 Tuba", "60 Muted Trumpet",
+				"61 French Horn", "62 Brass Section", "63 Synth Brass 1",
+				"64 Synth Brass 2", "65 Soprano Sax", "66 Alto Sax",
+				"67 Tenor Sax", "68 Baritone Sax", "69 Oboe",
+				"70 English Horn", "71 Bassoon", "72 Clarinet", "73 Piccolo",
+				"74 Flute", "75 Recorder", "76 Pan Flute", "77 Blown Bottle",
+				"78 Shakuhachi", "79 Whistle", "80 Ocarina",
+				"81 Lead 1 (square)", "82 Lead 2 (sawtooth)",
+				"83 Lead 3 (calliope)", "84 Lead 4 (chiff)",
+				"85 Lead 5 (charang)", "86 Lead 6 (voice)",
+				"87 Lead 7 (fifths)", "88 Lead 8 (bass + lead)",
+				"89 Pad 1 (new age)", "90 Pad 2 (warm)",
+				"91 Pad 3 (polysynth)", "92 Pad 4 (choir)", "93 Pad 5 (bowed)",
+				"94 Pad 6 (metallic)", "95 Pad 7 (halo)", "96 Pad 8 (sweep)",
+				"97 FX 1 (rain)", "98 FX 2 (soundtrack)", "99 FX 3 (crystal)",
+				"100 FX 4 (atmosphere)", "101 FX 5 (brightness)",
+				"102 FX 6 (goblins)", "103 FX 7 (echoes)", "104 FX 8 (sci-fi)",
+				"105 Sitar", "106 Banjo", "107 Shamisen", "108 Koto",
+				"109 Kalimba", "110 Bag pipe", "111 Fiddle", "112 Shanai",
+				"113 Tinkle Bell", "114 Agogo", "115 Steel Drums",
+				"116 Woodblock", "117 Taiko Drum", "118 Melodic Tom",
+				"119 Synth Drum", "120 Reverse Cymbal",
+				"121 Guitar Fret Noise", "122 Breath Noise", "123 Seashore",
+				"124 Bird Tweet", "125 Telephone Ring", "126 Helicopter",
+				"127 Applause", "128 Gunshot" }));
+		comboBox.setBounds(100, 342, 168, 27);
+		getContentPane().add(comboBox);
+
+		JLabel lblInstrument = new JLabel("Instrument");
+		lblInstrument.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
+		lblInstrument.setBounds(6, 339, 90, 29);
+		getContentPane().add(lblInstrument);
 
 		this.btnC_0.addMouseListener(this);
 		this.btnD_0.addMouseListener(this);
@@ -430,80 +512,6 @@ public class GUI extends JFrame implements ActionListener, MouseListener {
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == btnC_0) {
-			player.play(PlaySound.octaveHigher(C, -1), 200);
-		}
-		if (e.getSource() == btnD_0) {
-			player.play(PlaySound.octaveHigher(D, -1), 200);
-		}
-		if (e.getSource() == btnE_0) {
-			player.play(PlaySound.octaveHigher(E, -1), 200);
-		}
-		if (e.getSource() == btnF_0) {
-			player.play(PlaySound.octaveHigher(F, -1), 200);
-		}
-		if (e.getSource() == btnG_0) {
-			player.play(PlaySound.octaveHigher(G, -1), 200);
-		}
-		if (e.getSource() == btnA_0) {
-			player.play(PlaySound.octaveHigher(A, -1), 200);
-		}
-		if (e.getSource() == btnB_0) {
-			player.play(PlaySound.octaveHigher(B, -1), 200);
-		}
-		if (e.getSource() == btnC_1) {
-			player.play(C, 200);
-		}
-		if (e.getSource() == btnD_1) {
-			player.play(D, 200);
-		}
-		if (e.getSource() == btnE_1) {
-			player.play(E, 200);
-		}
-		if (e.getSource() == btnF_1) {
-			player.play(F, 200);
-		}
-		if (e.getSource() == btnG_1) {
-			player.play(G, 200);
-		}
-		if (e.getSource() == btnA_1) {
-			player.play(A, 200);
-		}
-		if (e.getSource() == btnB_1) {
-			player.play(B, 200);
-		}
-		if (e.getSource() == btnC_2) {
-			player.play(PlaySound.octaveHigher(C, 1), 200);
-		}
-		if (e.getSource() == btnD_2) {
-			player.play(PlaySound.octaveHigher(D, 1), 200);
-		}
-		if (e.getSource() == btnE_2) {
-			player.play(PlaySound.octaveHigher(E, 1), 200);
-		}
-		if (e.getSource() == btnF_2) {
-			player.play(PlaySound.octaveHigher(F, 1), 200);
-		}
-
-		if (e.getSource() == btnCs_0) {
-			player.play(PlaySound.octaveHigher(Cs, -1), 200);
-		}
-		if (e.getSource() == btnDs_0) {
-			player.play(PlaySound.octaveHigher(Ds, -1), 200);
-		}
-		if (e.getSource() == btnFs_0) {
-			player.play(PlaySound.octaveHigher(Fs, -1), 200);
-		}
-		if (e.getSource() == btnGs_0) {
-			player.play(PlaySound.octaveHigher(Gs, -1), 200);
-		}
-		if (e.getSource() == btnAs_0) {
-			player.play(PlaySound.octaveHigher(As, -1), 200);
-		}
-	}
-
-	@Override
 	public void mouseClicked(MouseEvent e) {
 
 	}
@@ -512,126 +520,126 @@ public class GUI extends JFrame implements ActionListener, MouseListener {
 	public void mouseEntered(MouseEvent e) {
 		if (chckbxSlideToPlay.isSelected()) {
 			if (e.getSource() == btnC_0) {
-				player.play(PlaySound.octaveHigher(C, -1));
+				player.play(MidiPlayer.octaveHigher(C, -1), volume, channel);
 				lblNewLabel.setText("C3");
 			}
 			if (e.getSource() == btnD_0) {
-				player.play(PlaySound.octaveHigher(D, -1));
+				player.play(MidiPlayer.octaveHigher(D, -1), volume, channel);
 				lblNewLabel.setText("D3");
 			}
 			if (e.getSource() == btnE_0) {
-				player.play(PlaySound.octaveHigher(E, -1));
+				player.play(MidiPlayer.octaveHigher(E, -1), volume, channel);
 				lblNewLabel.setText("E3");
 			}
 			if (e.getSource() == btnF_0) {
-				player.play(PlaySound.octaveHigher(F, -1));
+				player.play(MidiPlayer.octaveHigher(F, -1), volume, channel);
 				lblNewLabel.setText("F3");
 			}
 			if (e.getSource() == btnG_0) {
-				player.play(PlaySound.octaveHigher(G, -1));
+				player.play(MidiPlayer.octaveHigher(G, -1), volume, channel);
 				lblNewLabel.setText("G3");
 			}
 			if (e.getSource() == btnA_0) {
-				player.play(PlaySound.octaveHigher(A, -1));
+				player.play(MidiPlayer.octaveHigher(A, -1), volume, channel);
 				lblNewLabel.setText("A3");
 			}
 			if (e.getSource() == btnB_0) {
-				player.play(PlaySound.octaveHigher(B, -1));
+				player.play(MidiPlayer.octaveHigher(B, -1), volume, channel);
 				lblNewLabel.setText("B3");
 			}
 			if (e.getSource() == btnC_1) {
-				player.play(C);
+				player.play(C, volume, channel);
 				lblNewLabel.setText("C4");
 			}
 			if (e.getSource() == btnD_1) {
-				player.play(D);
+				player.play(D, volume, channel);
 				lblNewLabel.setText("D4");
 			}
 			if (e.getSource() == btnE_1) {
-				player.play(E);
+				player.play(E, volume, channel);
 				lblNewLabel.setText("E4");
 			}
 			if (e.getSource() == btnF_1) {
-				player.play(F);
+				player.play(F, volume, channel);
 				lblNewLabel.setText("F4");
 			}
 			if (e.getSource() == btnG_1) {
-				player.play(G);
+				player.play(G, volume, channel);
 				lblNewLabel.setText("G4");
 			}
 			if (e.getSource() == btnA_1) {
-				player.play(A);
+				player.play(A, volume, channel);
 				lblNewLabel.setText("A4");
 			}
 			if (e.getSource() == btnB_1) {
-				player.play(B);
+				player.play(B, volume, channel);
 				lblNewLabel.setText("B4");
 			}
 			if (e.getSource() == btnC_2) {
-				player.play(PlaySound.octaveHigher(C, 1));
+				player.play(MidiPlayer.octaveHigher(C, 1), volume, channel);
 				lblNewLabel.setText("C5");
 			}
 			if (e.getSource() == btnD_2) {
-				player.play(PlaySound.octaveHigher(D, 1));
+				player.play(MidiPlayer.octaveHigher(D, 1), volume, channel);
 				lblNewLabel.setText("D5");
 			}
 			if (e.getSource() == btnE_2) {
-				player.play(PlaySound.octaveHigher(E, 1));
+				player.play(MidiPlayer.octaveHigher(E, 1), volume, channel);
 				lblNewLabel.setText("E5");
 			}
 			if (e.getSource() == btnF_2) {
-				player.play(PlaySound.octaveHigher(F, 1));
+				player.play(MidiPlayer.octaveHigher(F, 1), volume, channel);
 				lblNewLabel.setText("F5");
 			}
 
 			if (e.getSource() == btnCs_0) {
-				player.play(PlaySound.octaveHigher(Cs, -1));
+				player.play(MidiPlayer.octaveHigher(Cs, -1), volume, channel);
 				lblNewLabel.setText("C#3");
 			}
 			if (e.getSource() == btnDs_0) {
-				player.play(PlaySound.octaveHigher(Ds, -1));
+				player.play(MidiPlayer.octaveHigher(Ds, -1), volume, channel);
 				lblNewLabel.setText("Eb3");
 			}
 			if (e.getSource() == btnFs_0) {
-				player.play(PlaySound.octaveHigher(Fs, -1));
+				player.play(MidiPlayer.octaveHigher(Fs, -1), volume, channel);
 				lblNewLabel.setText("F#3");
 			}
 			if (e.getSource() == btnGs_0) {
-				player.play(PlaySound.octaveHigher(Gs, -1));
+				player.play(MidiPlayer.octaveHigher(Gs, -1), volume, channel);
 				lblNewLabel.setText("G#3");
 			}
 			if (e.getSource() == btnAs_0) {
-				player.play(PlaySound.octaveHigher(As, -1));
+				player.play(MidiPlayer.octaveHigher(As, -1), volume, channel);
 				lblNewLabel.setText("Bb3");
 			}
 
 			if (e.getSource() == btnCs_1) {
-				player.play(Cs);
+				player.play(Cs, volume, channel);
 				lblNewLabel.setText("C#4");
 			}
 			if (e.getSource() == btnDs_1) {
-				player.play(Ds);
+				player.play(Ds, volume, channel);
 				lblNewLabel.setText("Eb4");
 			}
 			if (e.getSource() == btnFs_1) {
-				player.play(Fs);
+				player.play(Fs, volume, channel);
 				lblNewLabel.setText("F#4");
 			}
 			if (e.getSource() == btnGs_1) {
-				player.play(Gs);
+				player.play(Gs, volume, channel);
 				lblNewLabel.setText("G#4");
 			}
 			if (e.getSource() == btnAs_1) {
-				player.play(As);
+				player.play(As, volume, channel);
 				lblNewLabel.setText("Bb4");
 			}
 
 			if (e.getSource() == btnCs_2) {
-				player.play(PlaySound.octaveHigher(Cs, 1));
+				player.play(MidiPlayer.octaveHigher(Cs, 1), volume, channel);
 				lblNewLabel.setText("C#5");
 			}
 			if (e.getSource() == btnDs_2) {
-				player.play(PlaySound.octaveHigher(Ds, 1));
+				player.play(MidiPlayer.octaveHigher(Ds, 1), volume, channel);
 				lblNewLabel.setText("Eb5");
 			}
 		}
@@ -641,25 +649,25 @@ public class GUI extends JFrame implements ActionListener, MouseListener {
 	public void mouseExited(MouseEvent e) {
 		lblNewLabel.setText("");
 		if (e.getSource() == btnC_0) {
-			player.release(PlaySound.octaveHigher(C, -1));
+			player.release(MidiPlayer.octaveHigher(C, -1));
 		}
 		if (e.getSource() == btnD_0) {
-			player.release(PlaySound.octaveHigher(D, -1));
+			player.release(MidiPlayer.octaveHigher(D, -1));
 		}
 		if (e.getSource() == btnE_0) {
-			player.release(PlaySound.octaveHigher(E, -1));
+			player.release(MidiPlayer.octaveHigher(E, -1));
 		}
 		if (e.getSource() == btnF_0) {
-			player.release(PlaySound.octaveHigher(F, -1));
+			player.release(MidiPlayer.octaveHigher(F, -1));
 		}
 		if (e.getSource() == btnG_0) {
-			player.release(PlaySound.octaveHigher(G, -1));
+			player.release(MidiPlayer.octaveHigher(G, -1));
 		}
 		if (e.getSource() == btnA_0) {
-			player.release(PlaySound.octaveHigher(A, -1));
+			player.release(MidiPlayer.octaveHigher(A, -1));
 		}
 		if (e.getSource() == btnB_0) {
-			player.release(PlaySound.octaveHigher(B, -1));
+			player.release(MidiPlayer.octaveHigher(B, -1));
 		}
 		if (e.getSource() == btnC_1) {
 			player.release(C);
@@ -683,31 +691,31 @@ public class GUI extends JFrame implements ActionListener, MouseListener {
 			player.release(B);
 		}
 		if (e.getSource() == btnC_2) {
-			player.release(PlaySound.octaveHigher(C, 1));
+			player.release(MidiPlayer.octaveHigher(C, 1));
 		}
 		if (e.getSource() == btnD_2) {
-			player.release(PlaySound.octaveHigher(D, 1));
+			player.release(MidiPlayer.octaveHigher(D, 1));
 		}
 		if (e.getSource() == btnE_2) {
-			player.release(PlaySound.octaveHigher(E, 1));
+			player.release(MidiPlayer.octaveHigher(E, 1));
 		}
 		if (e.getSource() == btnF_2) {
-			player.release(PlaySound.octaveHigher(F, 1));
+			player.release(MidiPlayer.octaveHigher(F, 1));
 		}
 		if (e.getSource() == btnCs_0) {
-			player.release(PlaySound.octaveHigher(Cs, -1));
+			player.release(MidiPlayer.octaveHigher(Cs, -1));
 		}
 		if (e.getSource() == btnDs_0) {
-			player.release(PlaySound.octaveHigher(Ds, -1));
+			player.release(MidiPlayer.octaveHigher(Ds, -1));
 		}
 		if (e.getSource() == btnFs_0) {
-			player.release(PlaySound.octaveHigher(Fs, -1));
+			player.release(MidiPlayer.octaveHigher(Fs, -1));
 		}
 		if (e.getSource() == btnGs_0) {
-			player.release(PlaySound.octaveHigher(Gs, -1));
+			player.release(MidiPlayer.octaveHigher(Gs, -1));
 		}
 		if (e.getSource() == btnAs_0) {
-			player.release(PlaySound.octaveHigher(As, -1));
+			player.release(MidiPlayer.octaveHigher(As, -1));
 		}
 
 		if (e.getSource() == btnCs_1) {
@@ -727,136 +735,136 @@ public class GUI extends JFrame implements ActionListener, MouseListener {
 		}
 
 		if (e.getSource() == btnCs_2) {
-			player.release(PlaySound.octaveHigher(Cs, 1));
+			player.release(MidiPlayer.octaveHigher(Cs, 1));
 		}
 		if (e.getSource() == btnDs_2) {
-			player.release(PlaySound.octaveHigher(Ds, 1));
+			player.release(MidiPlayer.octaveHigher(Ds, 1));
 		}
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
 		if (e.getSource() == btnC_0) {
-			player.play(PlaySound.octaveHigher(C, -1));
+			player.play(MidiPlayer.octaveHigher(C, -1), volume, channel);
 			lblNewLabel.setText("C3");
 		}
 		if (e.getSource() == btnD_0) {
-			player.play(PlaySound.octaveHigher(D, -1));
+			player.play(MidiPlayer.octaveHigher(D, -1), volume, channel);
 			lblNewLabel.setText("D3");
 		}
 		if (e.getSource() == btnE_0) {
-			player.play(PlaySound.octaveHigher(E, -1));
+			player.play(MidiPlayer.octaveHigher(E, -1), volume, channel);
 			lblNewLabel.setText("E3");
 		}
 		if (e.getSource() == btnF_0) {
-			player.play(PlaySound.octaveHigher(F, -1));
+			player.play(MidiPlayer.octaveHigher(F, -1), volume, channel);
 			lblNewLabel.setText("F3");
 		}
 		if (e.getSource() == btnG_0) {
-			player.play(PlaySound.octaveHigher(G, -1));
+			player.play(MidiPlayer.octaveHigher(G, -1), volume, channel);
 			lblNewLabel.setText("G3");
 		}
 		if (e.getSource() == btnA_0) {
-			player.play(PlaySound.octaveHigher(A, -1));
+			player.play(MidiPlayer.octaveHigher(A, -1), volume, channel);
 			lblNewLabel.setText("A3");
 		}
 		if (e.getSource() == btnB_0) {
-			player.play(PlaySound.octaveHigher(B, -1));
+			player.play(MidiPlayer.octaveHigher(B, -1), volume, channel);
 			lblNewLabel.setText("B3");
 		}
 		if (e.getSource() == btnC_1) {
-			player.play(C);
+			player.play(C, volume, channel);
 			lblNewLabel.setText("C4");
 		}
 		if (e.getSource() == btnD_1) {
-			player.play(D);
+			player.play(D, volume, channel);
 			lblNewLabel.setText("D4");
 		}
 		if (e.getSource() == btnE_1) {
-			player.play(E);
+			player.play(E, volume, channel);
 			lblNewLabel.setText("E4");
 		}
 		if (e.getSource() == btnF_1) {
-			player.play(F);
+			player.play(F, volume, channel);
 			lblNewLabel.setText("F4");
 		}
 		if (e.getSource() == btnG_1) {
-			player.play(G);
+			player.play(G, volume, channel);
 			lblNewLabel.setText("G4");
 		}
 		if (e.getSource() == btnA_1) {
-			player.play(A);
+			player.play(A, volume, channel);
 			lblNewLabel.setText("A4");
 		}
 		if (e.getSource() == btnB_1) {
-			player.play(B);
+			player.play(B, volume, channel);
 			lblNewLabel.setText("B4");
 		}
 		if (e.getSource() == btnC_2) {
-			player.play(PlaySound.octaveHigher(C, 1));
+			player.play(MidiPlayer.octaveHigher(C, 1), volume, channel);
 			lblNewLabel.setText("C5");
 		}
 		if (e.getSource() == btnD_2) {
-			player.play(PlaySound.octaveHigher(D, 1));
+			player.play(MidiPlayer.octaveHigher(D, 1), volume, channel);
 			lblNewLabel.setText("D5");
 		}
 		if (e.getSource() == btnE_2) {
-			player.play(PlaySound.octaveHigher(E, 1));
+			player.play(MidiPlayer.octaveHigher(E, 1), volume, channel);
 			lblNewLabel.setText("E5");
 		}
 		if (e.getSource() == btnF_2) {
-			player.play(PlaySound.octaveHigher(F, 1));
+			player.play(MidiPlayer.octaveHigher(F, 1), volume, channel);
 			lblNewLabel.setText("F5");
 		}
 
 		if (e.getSource() == btnCs_0) {
-			player.play(PlaySound.octaveHigher(Cs, -1));
+			player.play(MidiPlayer.octaveHigher(Cs, -1), volume, channel);
 			lblNewLabel.setText("C#3");
 		}
 		if (e.getSource() == btnDs_0) {
-			player.play(PlaySound.octaveHigher(Ds, -1));
+			player.play(MidiPlayer.octaveHigher(Ds, -1), volume, channel);
 			lblNewLabel.setText("Eb3");
 		}
 		if (e.getSource() == btnFs_0) {
-			player.play(PlaySound.octaveHigher(Fs, -1));
+			player.play(MidiPlayer.octaveHigher(Fs, -1), volume, channel);
 			lblNewLabel.setText("F#3");
 		}
 		if (e.getSource() == btnGs_0) {
-			player.play(PlaySound.octaveHigher(Gs, -1));
+			player.play(MidiPlayer.octaveHigher(Gs, -1), volume, channel);
 			lblNewLabel.setText("G#3");
 		}
 		if (e.getSource() == btnAs_0) {
-			player.play(PlaySound.octaveHigher(As, -1));
+			player.play(MidiPlayer.octaveHigher(As, -1), volume, channel);
 			lblNewLabel.setText("Bb3");
 		}
 
 		if (e.getSource() == btnCs_1) {
-			player.play(Cs);
+			player.play(Cs, volume, channel);
 			lblNewLabel.setText("C#4");
 		}
 		if (e.getSource() == btnDs_1) {
-			player.play(Ds);
+			player.play(Ds, volume, channel);
 			lblNewLabel.setText("Eb4");
 		}
 		if (e.getSource() == btnFs_1) {
-			player.play(Fs);
+			player.play(Fs, volume, channel);
 			lblNewLabel.setText("F#4");
 		}
 		if (e.getSource() == btnGs_1) {
-			player.play(Gs);
+			player.play(Gs, volume, channel);
 			lblNewLabel.setText("G#4");
 		}
 		if (e.getSource() == btnAs_1) {
-			player.play(As);
+			player.play(As, volume, channel);
 			lblNewLabel.setText("Bb4");
 		}
 
 		if (e.getSource() == btnCs_2) {
-			player.play(PlaySound.octaveHigher(Cs, 1));
+			player.play(MidiPlayer.octaveHigher(Cs, 1), volume, channel);
 			lblNewLabel.setText("C#5");
 		}
 		if (e.getSource() == btnDs_2) {
-			player.play(PlaySound.octaveHigher(Ds, 1));
+			player.play(MidiPlayer.octaveHigher(Ds, 1), volume, channel);
 			lblNewLabel.setText("Eb5");
 		}
 	}
@@ -865,25 +873,25 @@ public class GUI extends JFrame implements ActionListener, MouseListener {
 	public void mouseReleased(MouseEvent e) {
 		lblNewLabel.setText("");
 		if (e.getSource() == btnC_0) {
-			player.release(PlaySound.octaveHigher(C, -1));
+			player.release(MidiPlayer.octaveHigher(C, -1));
 		}
 		if (e.getSource() == btnD_0) {
-			player.release(PlaySound.octaveHigher(D, -1));
+			player.release(MidiPlayer.octaveHigher(D, -1));
 		}
 		if (e.getSource() == btnE_0) {
-			player.release(PlaySound.octaveHigher(E, -1));
+			player.release(MidiPlayer.octaveHigher(E, -1));
 		}
 		if (e.getSource() == btnF_0) {
-			player.release(PlaySound.octaveHigher(F, -1));
+			player.release(MidiPlayer.octaveHigher(F, -1));
 		}
 		if (e.getSource() == btnG_0) {
-			player.release(PlaySound.octaveHigher(G, -1));
+			player.release(MidiPlayer.octaveHigher(G, -1));
 		}
 		if (e.getSource() == btnA_0) {
-			player.release(PlaySound.octaveHigher(A, -1));
+			player.release(MidiPlayer.octaveHigher(A, -1));
 		}
 		if (e.getSource() == btnB_0) {
-			player.release(PlaySound.octaveHigher(B, -1));
+			player.release(MidiPlayer.octaveHigher(B, -1));
 		}
 		if (e.getSource() == btnC_1) {
 			player.release(C);
@@ -907,32 +915,32 @@ public class GUI extends JFrame implements ActionListener, MouseListener {
 			player.release(B);
 		}
 		if (e.getSource() == btnC_2) {
-			player.release(PlaySound.octaveHigher(C, 1));
+			player.release(MidiPlayer.octaveHigher(C, 1));
 		}
 		if (e.getSource() == btnD_2) {
-			player.release(PlaySound.octaveHigher(D, 1));
+			player.release(MidiPlayer.octaveHigher(D, 1));
 		}
 		if (e.getSource() == btnE_2) {
-			player.release(PlaySound.octaveHigher(E, 1));
+			player.release(MidiPlayer.octaveHigher(E, 1));
 		}
 		if (e.getSource() == btnF_2) {
-			player.release(PlaySound.octaveHigher(F, 1));
+			player.release(MidiPlayer.octaveHigher(F, 1));
 		}
 
 		if (e.getSource() == btnCs_0) {
-			player.release(PlaySound.octaveHigher(Cs, -1));
+			player.release(MidiPlayer.octaveHigher(Cs, -1));
 		}
 		if (e.getSource() == btnDs_0) {
-			player.release(PlaySound.octaveHigher(Ds, -1));
+			player.release(MidiPlayer.octaveHigher(Ds, -1));
 		}
 		if (e.getSource() == btnFs_0) {
-			player.release(PlaySound.octaveHigher(Fs, -1));
+			player.release(MidiPlayer.octaveHigher(Fs, -1));
 		}
 		if (e.getSource() == btnGs_0) {
-			player.release(PlaySound.octaveHigher(Gs, -1));
+			player.release(MidiPlayer.octaveHigher(Gs, -1));
 		}
 		if (e.getSource() == btnAs_0) {
-			player.release(PlaySound.octaveHigher(As, -1));
+			player.release(MidiPlayer.octaveHigher(As, -1));
 		}
 
 		if (e.getSource() == btnCs_1) {
@@ -952,10 +960,10 @@ public class GUI extends JFrame implements ActionListener, MouseListener {
 		}
 
 		if (e.getSource() == btnCs_2) {
-			player.release(PlaySound.octaveHigher(Cs, 1));
+			player.release(MidiPlayer.octaveHigher(Cs, 1));
 		}
 		if (e.getSource() == btnDs_2) {
-			player.release(PlaySound.octaveHigher(Ds, 1));
+			player.release(MidiPlayer.octaveHigher(Ds, 1));
 		}
 	}
 }

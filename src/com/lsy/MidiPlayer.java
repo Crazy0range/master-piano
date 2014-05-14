@@ -29,9 +29,34 @@ import java.util.Random;
  * in advance) and the quality won't be as good as a recorded sound. If you're
  * looking for special effects, a backing track or in game sounds then chances
  * are you'll be better off using normal sound files.
- * 
- * @author Michael Berry (mjrb4)
- * @version 12/02/09
+ * 	* ---------------- ------------- --------------------------
+	* <li>21 A0 lowest note on an 88-key piano</li>
+	* <li>. . .</li>
+	* <li>. . .</li>
+	* <li>. . .</li>
+	* <li>57 A3 has a frequency of 220 Hertz</li>
+	* <li>58 A3# = B3b</li>
+	* <li>59 B3</li>
+	* <li>60 C4 "middle C"; start of 4th octave</li>
+	* <li> 61 C4# = D4b</li>
+	* <li> 62 D4</li>
+	* <li> 63 D4# = E4b</li>
+	* <li> 64 E4</li>
+	* <li> 65 F4</li>
+	* <li> 66 F4# = G4b</li>
+	* <li> 67 G4</li>
+	* <li> 68 G4# = A4b</li>
+	* <li> 69 A4 "concert A"; has a frequency of 440 Hertz</li>
+	* <li> 70 A4# = B4b</li>
+	* <li> 71 B4</li>
+	* <li> 72 C5 "concert C"; start of 5th octave</li>
+	* <li> 73 C5# = D5b</li>
+	* <li> . . .</li>
+	* <li> . . .</li>
+	* <li> . . .</li>
+	* <li> 108 C8 highest note on an 88-key piano</li>
+ * @author Siyuan Liu (Crazy0range)
+ * @version 
  */
 public class MidiPlayer {
 
@@ -60,6 +85,7 @@ public class MidiPlayer {
 	public MidiPlayer() {
 		channel = getChannel(DEFAULT_INSTRUMENT);
 	}
+	
 
 	/**
 	 * Create a new MidiPlayer object with a specified instrument.
@@ -121,6 +147,13 @@ public class MidiPlayer {
 			throw new RuntimeException(key + " is an invalid key name...");
 		}
 	}
+	
+	// Create an integer representing "octave" higher octaves than the input note.
+	// i.e. C will become high C. if octaveHigher(C, 1).
+	public static int octaveHigher(int note, int octave){
+		return note + (octave * 12);
+	}
+	
 
 	/**
 	 * Set how far each note is (relatively in semitones) above C.
@@ -209,6 +242,11 @@ public class MidiPlayer {
 			}
 		}.start();
 
+	}
+	
+	public void play(final int note, final int volume, final int instrument) {
+		setInstrument(instrument);
+		channel.noteOn(note, volume);
 	}
 
 	/**
